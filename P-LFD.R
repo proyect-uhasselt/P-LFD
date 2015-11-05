@@ -75,9 +75,9 @@ base$COPD_severity <- factor(base$COPD_severity, levels = c(1:4),
 names(base)[names(base) == 'COPD_severity'] <- 'COPDseverity'
 
 # Categorical variables
-# categorical <- c("Trt", "Country", "Gender", "Civil_Status", "Living_Situation",
-#                  "Educ_level", "Smoke", "Work", "Phys_Act", "Comorbidity",
-#                  "COPD_severity")
+categorical <- c("Trt", "Country", "Gender", "Civil_Status", "Living_Situation",
+                 "Educ_level", "Smoke", "Work", "Phys_Act", "Comorbidity",
+                 "COPD_severity")
 tab <- tabular((Country) + (Gender) + (CivilStatus) + (LivingSituation) + (Smoke) + (Work) +
                  (PhysAct) + (Comorbidity) + (COPDseverity) ~ 
                  (n=1) + Format(digits = 2) * (Trt + 1), data = base)
@@ -167,15 +167,38 @@ boxplot(FEV ~ Trt, data = base,
 
 # Scatterplots of continuous variables against HRQoL difference scores
 ## ----HRQoL---------------------------------------------------------------
+# attach(base)
+# par(mfrow=c(3,2))
+# plot(Age, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. Age")
+# plot(BMI, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. BMI")
+# plot(STST, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. STST")
+# plot(BDI, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. BDI")
+# plot(FEV, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. FEV")
+# detach(base)
+
 attach(base)
-par(mfrow=c(3,2))
-plot(Age, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. Age")
-plot(BMI, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. BMI")
-plot(STST, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. STST")
-plot(BDI, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. BDI")
-plot(FEV, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. FEV")
+xyplot(HRQoLdiff ~ Age | Trt, main="Scatterplot of HRQoLdiff vs. Age", type = c("p", "r"))
+xyplot(HRQoLdiff ~ BMI | Trt, main="Scatterplot of HRQoLdiff vs. BMI", type = c("p", "r"))
+xyplot(HRQoLdiff ~ STST | Trt, main="Scatterplot of HRQoLdiff vs. STST", type = c("p", "r"))
+xyplot(HRQoLdiff ~ BDI | Trt, main="Scatterplot of HRQoLdiff vs. BDI", type = c("p", "r"))
+xyplot(HRQoLdiff ~ FEV | Trt, main="Scatterplot of HRQoLdiff vs. FEV", type = c("p", "r"))
 detach(base)
 
+# Scatterplots of categorical variables against HRQoL difference scores
+## ----HRQoL---------------------------------------------------------------
+categorical
+attach(base)
+par(mfrow=c(1,1))
+bwplot(HRQoLdiff ~ Country | Trt, main="Scatterplot of HRQoLdiff vs. Country")
+bwplot(HRQoLdiff ~ Gender | Trt, main="Scatterplot of HRQoLdiff vs. Gender")
+bwplot(HRQoLdiff ~ CivilStatus | Trt, main="Scatterplot of HRQoLdiff vs. CivilStatus")
+bwplot(HRQoLdiff ~ LivingSituation | Trt, main="Scatterplot of HRQoLdiff vs. LivingSituation")
+bwplot(HRQoLdiff ~ Smoke | Trt, main="Scatterplot of HRQoLdiff vs. Smoke")
+bwplot(HRQoLdiff ~ Work | Trt, main="Scatterplot of HRQoLdiff vs. Work")
+bwplot(HRQoLdiff ~ PhysAct | Trt, main="Scatterplot of HRQoLdiff vs. PhysAct")
+bwplot(HRQoLdiff ~ Comorbidity | Trt, main="Scatterplot of HRQoLdiff vs. Comorbidity")
+bwplot(HRQoLdiff ~ COPDseverity | Trt, main="Scatterplot of HRQoLdiff vs. COPDseverity")
+detach(base)
 
 
 
