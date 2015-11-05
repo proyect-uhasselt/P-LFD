@@ -1,3 +1,7 @@
+# R.Version()
+# This script was written using R 3.2.3
+
+
 ## load packages and data ####
 library(lattice)
 library(plyr)
@@ -98,15 +102,68 @@ ddply(base, .(Trt), summarise,
 
 ## Plots ####
 
+## Outcomes measures
+
 # Plot HRQoL over visits in the three treatments
 # (note that this uses 'df')
-xyplot(HRQoL ~ as.factor(Visit) | Trt, groups = PatientID, data = df, type = c("p", "l"))
+df$Trt <- factor(df$Trt, levels = c(1:3), labels = c("Treatment A", "Treatment B", "Treatment C"))
+xyplot(HRQoL ~ as.factor(Visit) | Trt, groups = PatientID, data = df, type = c("p", "l"),
+       main = "HRQoL scores at visit 1 and 2",
+       xlab = "Visits",
+       ylab = "HRQoL score")
 
 # Boxplot of the HRQoL difference scores per treatment
 boxplot(HRQoLdiff ~ Trt, data = base,
         main = "HRQoL difference scores",
         xlab = "Treatment",
         ylab = "Difference score")
+
+# Same for RQ
+# (note that this uses 'df')
+xyplot(RQ ~ as.factor(Visit) | Trt, groups = PatientID, data = df, type = c("p", "l"),
+       main = "RQ scores at visti 1 and 2",
+       xlab = "Visits",
+       ylab = "RQ score")
+
+# Boxplot of the RQ difference scores per treatment
+boxplot(RQdiff ~ Trt, data = base,
+        main = "RQ difference scores",
+        xlab = "Treatment",
+        ylab = "Difference score")
+
+## predictors over treatment
+
+#continuous
+
+par(mfrow=c(4,2))
+boxplot(Age ~ Trt, data = base,
+        main = "Age at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "Age")
+boxplot(Height ~ Trt, data = base,
+        main = "Height at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "Height")
+boxplot(Weight ~ Trt, data = base,
+        main = "Weight at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "Weight")
+boxplot(BMI ~ Trt, data = base,
+        main = "BMI at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "BMI")
+boxplot(STST ~ Trt, data = base,
+        main = "STST at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "STST")
+boxplot(BDI ~ Trt, data = base,
+        main = "BDI at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "BDI")
+boxplot(FEV ~ Trt, data = base,
+        main = "FEV at baseline over treatments",
+        xlab = "Treatment",
+        ylab = "FEV")
 
 # Scatterplots of continuous variables against HRQoL difference scores
 ## ----HRQoL---------------------------------------------------------------
@@ -118,6 +175,7 @@ plot(STST, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. STST")
 plot(BDI, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. BDI")
 plot(FEV, HRQoLdiff, main="Scatterplot of HRQoLdiff vs. FEV")
 detach(base)
+
 
 
 
