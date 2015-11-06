@@ -30,14 +30,14 @@ table(df$Visit) #2 visit momentents, 75 each
 
 #HRQoL
 cast <- dcast(df, PatientID ~ Visit, value.var = "HRQoL")
-names(cast) <- c("PatientID", "HRQoL1", "HRQol2")
-df$HRQoLdiff <- cast$HRQoL1 - cast$HRQol2 
+names(cast) <- c("PatientID", "HRQoL1", "HRQoL2")
+df$HRQoLdiff <- cast$HRQoL2 - cast$HRQoL1
 rm(cast)
 
 #RQ
 cast <- dcast(df, PatientID ~ Visit, value.var = "RQ")
 names(cast) <- c("PatientID", "RQ1", "RQ2")
-df$RQdiff <- cast$RQ1 - cast$RQ2 
+df$RQdiff <- cast$RQ2 - cast$RQ1
 rm(cast)
 
 #save the baseline measurement including the difference scores just created as base
@@ -82,6 +82,7 @@ tab <- tabular((Country) + (Gender) + (CivilStatus) + (LivingSituation) + (Smoke
                  (PhysAct) + (Comorbidity) + (COPDseverity) ~ 
                  (n=1) + Format(digits = 2) * (Trt + 1), data = base)
 tab
+#latex(tab)
 
 # Continuous variables
 continuous <- c("HRQoL", "RQ", "Age", "Height", "Weight", "BMI",
@@ -89,6 +90,10 @@ continuous <- c("HRQoL", "RQ", "Age", "Height", "Weight", "BMI",
 stargazer(base[ ,continuous], 
           type = "text", 
           summary.stat = c("n","mean","sd", "p25", "median", "p75", "min", "max"))
+
+# stargazer(base[ ,continuous], 
+#           type = "latex", 
+#           summary.stat = c("n","mean","sd", "p25", "median", "p75", "min", "max"))
 
 # HRQoL differences scores over treatment
 ddply(base, .(Trt), summarise, 
@@ -113,7 +118,7 @@ xyplot(HRQoL ~ as.factor(Visit) | Trt, groups = PatientID, data = df, type = c("
        ylab = "HRQoL score")
 
 # Boxplot of the HRQoL difference scores per treatment
-boxplot(HRQoLdiff ~ Trt, data = base,
+bwplot(HRQoLdiff ~ Trt, data = base,
         main = "HRQoL difference scores",
         xlab = "Treatment",
         ylab = "Difference score")
@@ -126,16 +131,29 @@ xyplot(RQ ~ as.factor(Visit) | Trt, groups = PatientID, data = df, type = c("p",
        ylab = "RQ score")
 
 # Boxplot of the RQ difference scores per treatment
-boxplot(RQdiff ~ Trt, data = base,
+bwplot(RQdiff ~ Trt, data = base,
         main = "RQ difference scores",
         xlab = "Treatment",
         ylab = "Difference score")
+
+par(mfrow=c(1,2))
+boxplot(HRQoLdiff ~ Trt, data = base,
+       main = "HRQoL difference scores",
+       xlab = "Treatment",
+       ylab = "Difference score")
+boxplot(RQdiff ~ Trt, data = base,
+       main = "RQ difference scores",
+       xlab = "Treatment",
+       ylab = "Difference score")
+
+cor(base$HRQoLdiff, base$RQdiff, use = "complete.obs")
+cor(base$HRQoL, base$RQ, use = "complete.obs")
 
 ## predictors over treatment
 
 #continuous
 
-par(mfrow=c(4,2))
+par(mfrow=c(5,2))
 boxplot(Age ~ Trt, data = base,
         main = "Age at baseline over treatments",
         xlab = "Treatment",
@@ -164,6 +182,14 @@ boxplot(FEV ~ Trt, data = base,
         main = "FEV at baseline over treatments",
         xlab = "Treatment",
         ylab = "FEV")
+boxplot(HRQoLdiff ~ Trt, data = base,
+        main = "HRQoL difference scores",
+        xlab = "Treatment",
+        ylab = "Difference score")
+boxplot(RQdiff ~ Trt, data = base,
+        main = "RQ difference scores",
+        xlab = "Treatment",
+        ylab = "Difference score")
 
 # Scatterplots of continuous variables against HRQoL difference scores
 ## ----HRQoL---------------------------------------------------------------
